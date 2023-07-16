@@ -152,6 +152,12 @@ class _HomeScreenState extends State<HomeScreen>
     ));
   }
 
+  @override
+  void dispose() {
+    _swipeController.dispose();
+    super.dispose();
+  }
+
   Widget _buildMgPageView() {
     return ExcludeSemantics(
       child: PageView.builder(
