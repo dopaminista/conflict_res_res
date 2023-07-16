@@ -1,0 +1,345 @@
+import '/common_libs.dart';
+import '/ui/common/app_icons.dart';
+import '/ui/common/controls/app_page_indicator.dart';
+import '/ui/common/gradient_container.dart';
+import '/ui/common/static_text_scale.dart';
+import '/ui/common/themed_text.dart';
+import '/ui/common/utils/app_haptics.dart';
+
+class IntroScreen extends StatefulWidget {
+  const IntroScreen({Key? key}) : super(key: key);
+
+  @override
+  State<IntroScreen> createState() => _IntroScreenState();
+}
+
+class _IntroScreenState extends State<IntroScreen> {
+  static const double _imageSize = 250;
+  static const double _logoHeight = 126;
+  static const double _textHeight = 100;
+  static const double _pageIndicatorHeight = 55;
+
+  static List<_PageData> pageData = [];
+
+  late final PageController _pageController = PageController()
+    ..addListener(_handlePageChanged);
+  final ValueNotifier<int> _currentPage = ValueNotifier(0);
+  bool get _isOnLastPage => _currentPage.value.round() == pageData.length - 1;
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _handleIntroCompletePressed() {
+    if (_currentPage.value == pageData.length - 1) {
+      context.go(ScreenPaths.home);
+      settingsLogic.hasCompletedOnboarding.value = true;
+    }
+  }
+
+  void _handlePageChanged() {
+    int newPage = _pageController.page?.round() ?? 0;
+    _currentPage.value = newPage;
+  }
+
+  void _handleSemanticSwipe(int dir) {
+    _pageController.animateToPage((_pageController.page ?? 0).round() + dir,
+        duration: $styles.times.fast, curve: Curves.easeOut);
+  }
+
+  void _handleNavTextDoubleTapped() {
+    final int current = _pageController.page!.round();
+    if (_isOnLastPage) return;
+    _pageController.animateToPage(current + 1,
+        duration: 250.ms, curve: Curves.easeIn);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Set the page data, as strings may have changed based on locale
+    pageData = [
+      _PageData($strings.introTitleJourney, $strings.introDescriptionNavigate,
+          'assets/images/patches/5.png', '3'),
+      _PageData($strings.introTitleExplore, $strings.introDescriptionUncover,
+          'assets/images/patches/2.png', '2'),
+      // _PageData($strings.introTitleDiscover, $strings.introDescriptionLearn,
+      //     'statue', '3'),
+    ];
+
+    // This view uses a full screen PageView to enable swipe navigation.
+    // However, we only want the title / description to actually swipe,
+    // so we stack a PageView with that content over top of all the other
+    // content, and line up their layouts.
+    final List<Widget> pages = pageData.map((e) => _Page(data: e)).toList();
+
+    /// Return resulting widget tree
+    return DefaultTextColor(
+      color: $styles.colors.offWhite,
+      child: Container(
+        color: $styles.colors.black,
+        child: SafeArea(
+          child: Animate(
+            delay: 500.ms,
+            effects: const [FadeEffect()],
+            child: Stack(
+              children: [
+                // page view with title & description:
+                MergeSemantics(
+                  child: Semantics(
+                    onIncrease: () => _handleSemanticSwipe(1),
+                    onDecrease: () => _handleSemanticSwipe(-1),
+                    child: PageView(
+                      controller: _pageController,
+                      children: pages,
+                      onPageChanged: (_) => AppHaptics.lightImpact(),
+                    ),
+                  ),
+                ),
+
+                IgnorePointer(
+                  ignoringSemantics: false,
+                  child: Column(children: [
+                    const Spacer(),
+
+                    // logo:
+                    Semantics(
+                      header: true,
+                      child: Container(
+                        height: _logoHeight,
+                        alignment: Alignment.center,
+                        child: _WonderousLogo(),
+                      ),
+                    ),
+
+                    // masked image:
+                    SizedBox(
+                      height: _imageSize,
+                      width: _imageSize,
+                      child: ValueListenableBuilder<int>(
+                        valueListenable: _currentPage,
+                        builder: (_, value, __) {
+                          print('value is $value\n pageData is -> $pageData');
+                          return AnimatedSwitcher(
+                            duration: $styles.times.slow,
+                            child: KeyedSubtree(
+                              key: ValueKey(
+                                  value), // so AnimatedSwitcher sees it as a different child.
+                              child: _PageImage(data: pageData[value]),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+
+                    // placeholder gap for text:
+                    const Gap(_IntroScreenState._textHeight),
+
+                    // page indicator:
+                    Container(
+                      height: _pageIndicatorHeight,
+                      alignment: const Alignment(0.0, 0),
+                      child: AppPageIndicator(
+                          count: pageData.length,
+                          controller: _pageController,
+                          color: $styles.colors.offWhite),
+                    ),
+
+                    const Spacer(flex: 2),
+                  ]),
+                ),
+
+                // Build a cpl overlays to hide the content when swiping on very wide screens
+                _buildHzGradientOverlay(left: true),
+                _buildHzGradientOverlay(),
+
+                // finish button:
+                Positioned(
+                  right: $styles.insets.lg,
+                  bottom: $styles.insets.lg,
+                  child: _buildFinishBtn(context),
+                ),
+
+                // nav help text:
+                BottomCenter(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: $styles.insets.lg),
+                    child: _buildNavText(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHzGradientOverlay({bool left = false}) {
+    return Align(
+      alignment: Alignment(left ? -1 : 1, 0),
+      child: FractionallySizedBox(
+        widthFactor: .5,
+        child: Padding(
+          padding: EdgeInsets.only(left: left ? 0 : 200, right: left ? 200 : 0),
+          child: Transform.scale(
+              scaleX: left ? -1 : 1,
+              child: HzGradient([
+                $styles.colors.black.withOpacity(0),
+                $styles.colors.black,
+              ], const [
+                0,
+                .2
+              ])),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFinishBtn(BuildContext context) {
+    return ValueListenableBuilder<int>(
+      valueListenable: _currentPage,
+      builder: (_, pageIndex, __) {
+        return AnimatedOpacity(
+          opacity: pageIndex == pageData.length - 1 ? 1 : 0,
+          duration: $styles.times.fast,
+          child: CircleIconBtn(
+            icon: AppIcons.next_large,
+            bgColor: $styles.colors.accent1,
+            onPressed: _handleIntroCompletePressed,
+            semanticLabel: $strings.introSemanticEnterApp,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildNavText(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: _currentPage,
+      builder: (_, pageIndex, __) {
+        return AnimatedOpacity(
+          opacity: pageIndex == pageData.length - 1 ? 0 : 1,
+          duration: $styles.times.fast,
+          child: Semantics(
+            onTapHint: $strings.introSemanticNavigate,
+            onTap: _isOnLastPage ? null : _handleNavTextDoubleTapped,
+            child: Text($strings.introSemanticSwipeLeft,
+                style: $styles.text.bodySmall),
+          ),
+        );
+      },
+    );
+  }
+}
+
+@immutable
+class _PageData {
+  const _PageData(this.title, this.desc, this.img, this.mask);
+
+  final String title;
+  final String desc;
+  final String img;
+  final String mask;
+}
+
+class _Page extends StatelessWidget {
+  const _Page({Key? key, required this.data}) : super(key: key);
+
+  final _PageData data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      liveRegion: true,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: $styles.insets.md),
+        child: Column(children: [
+          const Spacer(),
+          const Gap(
+              _IntroScreenState._imageSize + _IntroScreenState._logoHeight),
+          SizedBox(
+            height: _IntroScreenState._textHeight,
+            width: 400,
+            child: StaticTextScale(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(data.title,
+                      style: $styles.text.wonderTitle
+                          .copyWith(fontSize: 24 * $styles.scale)),
+                  Gap($styles.insets.sm),
+                  Text(data.desc,
+                      style: $styles.text.body, textAlign: TextAlign.center),
+                ],
+              ),
+            ),
+          ),
+          const Gap(_IntroScreenState._pageIndicatorHeight),
+          const Spacer(flex: 2),
+        ]),
+      ),
+    );
+  }
+}
+
+class _WonderousLogo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // ExcludeSemantics(
+        //   child: SvgPicture.asset(SvgPaths.compassSimple,
+        //       colorFilter: $styles.colors.offWhite.colorFilter, height: 48),
+        // ),
+        Image.asset(
+          'assets/images/logos/allerox_logo.png',
+          // color: Colors.white,
+          colorBlendMode: BlendMode.difference,
+          color: Colors.amber,
+          height: 100,
+        ),
+        Gap($styles.insets.xs),
+        // StaticTextScale(
+        //   child: Text(
+        //     'Allerox',
+        //     style: $styles.text.wonderTitle.copyWith(
+        //         fontSize: 32 * $styles.scale, color: $styles.colors.offWhite),
+        //   ),
+        //   // Text(
+        //   //   $strings.introSemanticWonderous,
+        //   //   style: $styles.text.wonderTitle.copyWith(
+        //   //       fontSize: 32 * $styles.scale, color: $styles.colors.offWhite),
+        //   // ),
+        // )
+      ],
+    );
+  }
+}
+
+class _PageImage extends StatelessWidget {
+  const _PageImage({Key? key, required this.data}) : super(key: key);
+
+  final _PageData data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        SizedBox.expand(
+          child: Image.asset(
+            data.img,
+            fit: BoxFit.cover,
+            alignment: Alignment.centerRight,
+          ),
+        ),
+        Positioned.fill(
+            child: Image.asset(
+          '${ImagePaths.common}/intro-mask-${data.mask}.png',
+          fit: BoxFit.fill,
+        )),
+      ],
+    );
+  }
+}
