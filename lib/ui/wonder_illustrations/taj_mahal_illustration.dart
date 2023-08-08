@@ -5,18 +5,26 @@ import '/ui/wonder_illustrations/common/paint_textures.dart';
 import '/ui/wonder_illustrations/common/wonder_illustration_builder.dart';
 import '/ui/wonder_illustrations/common/wonder_illustration_config.dart';
 
-class TajMahalIllustration extends StatelessWidget {
-  TajMahalIllustration({Key? key, required this.config}) : super(key: key);
+class TajMahalIllustration extends StatefulWidget {
+  const TajMahalIllustration({Key? key, required this.config})
+      : super(key: key);
   final WonderIllustrationConfig config;
 
+  @override
+  State<TajMahalIllustration> createState() => _TajMahalIllustrationState();
+}
+
+class _TajMahalIllustrationState extends State<TajMahalIllustration> {
   final fgColor = WonderType.tajMahal.fgColor;
+
   final bgColor = WonderType.tajMahal.bgColor;
+
   final assetPath = WonderType.tajMahal.assetPath;
 
   @override
   Widget build(BuildContext context) {
     return WonderIllustrationBuilder(
-      config: config,
+      config: widget.config,
       bgBuilder: _buildBg,
       mgBuilder: _buildMg,
       fgBuilder: _buildFg,
@@ -35,7 +43,7 @@ class TajMahalIllustration extends StatelessWidget {
           flipY: true,
           opacity: anim.drive(Tween(begin: 0, end: .7)),
           color: bgColor,
-          scale: config.shortMode ? 3 : 1.15,
+          scale: widget.config.shortMode ? 3 : 1.15,
         ),
       ),
       // Sun
@@ -45,7 +53,7 @@ class TajMahalIllustration extends StatelessWidget {
         enableHero: true,
         heightFactor: .3,
         minHeight: 140,
-        offset: config.shortMode
+        offset: widget.config.shortMode
             ? Offset(-100, context.heightPx * -.02)
             : Offset(-150, context.heightPx * -.34),
       ),
@@ -64,8 +72,8 @@ class TajMahalIllustration extends StatelessWidget {
               minHeight: minHeight,
               enableHero: true,
               zoomAmt: .05,
-              fractionalOffset: Offset(0, config.shortMode ? .12 : -.15),
-              top: config.shortMode
+              fractionalOffset: Offset(0, widget.config.shortMode ? .12 : -.15),
+              top: widget.config.shortMode
                   ? null
                   : (_) => const FractionalTranslation(
                         translation: Offset(0, heightFactor),

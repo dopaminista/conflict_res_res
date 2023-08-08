@@ -17,14 +17,21 @@ class WondersLogic {
 
   void init() {
     all = [
-      // GreatWallData(),
       PetraData(),
-      // ColosseumData(),
-      // ChichenItzaData(),
-      // MachuPicchuData(),
       TajMahalData(),
-      // ChristRedeemerData(),
-      // PyramidsGizaData(),
     ];
+    print('all data is - $all');
   }
 }
+
+
+// all = [
+//       // GreatWallData(),
+//       PetraData(),
+//       // ColosseumData(),
+//       // ChichenItzaData(),
+//       // MachuPicchuData(),
+//       TajMahalData(),
+//       // ChristRedeemerData(),
+//       // PyramidsGizaData(),
+//     ];

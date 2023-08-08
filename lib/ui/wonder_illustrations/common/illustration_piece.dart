@@ -1,4 +1,5 @@
 import 'dart:ui' as ui;
+import 'dart:ui';
 
 import '/common_libs.dart';
 import '/ui/wonder_illustrations/common/wonder_illustration_builder.dart';
@@ -86,17 +87,14 @@ class _IllustrationPieceState extends State<IllustrationPiece> {
             final anim = wonderBuilder.anim;
             final curvedAnim = Curves.easeOut.transform(anim.value);
             final config = wonderBuilder.widget.config;
-            Widget img = Opacity(
-                opacity: .8,
-                child: BackdropFilter(
-                  blendMode: BlendMode.softLight,
-                  filter: ui.ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                  child: Image.asset(
-                    imgPath,
-                    opacity: anim,
-                    fit: BoxFit.fitHeight,
-                  ),
-                ));
+            Widget img = Image.asset(
+              imgPath,
+              opacity: anim.drive(Tween(
+                begin: 0,
+                end: .5,
+              )),
+              fit: BoxFit.fitHeight,
+            );
             // Add overflow box so image doesn't get clipped as we translate it around
             img = OverflowBox(maxWidth: 2500, child: img);
 

@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import '/common_libs.dart';
@@ -17,11 +16,7 @@ class AppBackdrop extends StatelessWidget {
   Widget build(BuildContext context) {
     final double normalStrength = clampDouble(strength, 0, 1);
     if (settingsLogic.useBlurs) {
-      return BackdropFilter(
-        filter: ImageFilter.blur(
-            sigmaX: normalStrength * 15, sigmaY: normalStrength * 15),
-        child: child ?? const SizedBox.expand(),
-      );
+      return child ?? const SizedBox.expand();
     }
     final fill =
         Container(color: $styles.colors.black.withOpacity(.8 * strength));

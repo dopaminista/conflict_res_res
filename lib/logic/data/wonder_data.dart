@@ -2,12 +2,26 @@ import 'package:equatable/equatable.dart';
 import '/logic/data/wonder_type.dart';
 import '/logic/data/wonders_data/search/search_data.dart';
 
+/// required fields are : type, title, subTitle, regionTitle, historyInfo1, unsplashCollectionId, historyInfo2, constructionInfo1,
+///  constructionInfo2, locationInfo1, locationInfo2, pullQuote1Top, pullQuote1Bottom, pullQuote1Author,
+///  unsplashCollectionId, videoId, events
 class WonderData extends Equatable {
   const WonderData({
     required this.type,
     required this.title,
     required this.subTitle,
     required this.regionTitle,
+    required this.unsplashCollectionId,
+    required this.pullQuote1Top,
+    required this.pullQuote1Bottom,
+    required this.pullQuote1Author,
+    required this.historyInfo1,
+    required this.historyInfo2,
+    required this.constructionInfo1,
+    required this.constructionInfo2,
+    required this.locationInfo1,
+    required this.locationInfo2,
+    required this.videoId,
     this.startYr = 0,
     this.endYr = 0,
     this.artifactStartYr = 0,
@@ -17,22 +31,11 @@ class WonderData extends Equatable {
     this.lat = 0,
     this.lng = 0,
     this.imageIds = const [],
-    required this.unsplashCollectionId,
-    required this.pullQuote1Top,
-    required this.pullQuote1Bottom,
-    required this.pullQuote1Author,
     this.pullQuote2 = '',
     this.pullQuote2Author = '',
     this.callout1 = '',
     this.callout2 = '',
     this.facts = const [],
-    required this.historyInfo1,
-    required this.historyInfo2,
-    required this.constructionInfo1,
-    required this.constructionInfo2,
-    required this.locationInfo1,
-    required this.locationInfo2,
-    required this.videoId,
     this.videoCaption = '',
     this.mapCaption = '',
     required this.events,
@@ -41,6 +44,10 @@ class WonderData extends Equatable {
     this.searchData = const [],
     this.searchSuggestions = const [],
   });
+
+  // factory WonderData.onlyRequiredFields() {
+  //   return WonderData()
+  // }
 
   final WonderType type;
   final String title;

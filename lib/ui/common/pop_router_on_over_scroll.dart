@@ -44,7 +44,11 @@ class _PopRouterOnOverScrollState extends State<PopRouterOnOverScroll> {
     final px = widget.controller.position.pixels;
     if (px < -_scrollToPopThreshold) {
       if (_isPointerDown) {
-        context.pop();
+        try {
+          context.pop();
+        } catch (e) {
+          print(e);
+        }
         widget.controller.removeListener(_handleScrollChanged);
       }
     }

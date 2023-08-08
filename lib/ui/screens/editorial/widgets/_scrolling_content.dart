@@ -1,7 +1,8 @@
 part of '../editorial_screen.dart';
 
 class _ScrollingContent extends StatelessWidget {
-  const _ScrollingContent(this.data, {Key? key, required this.scrollPos, required this.sectionNotifier})
+  const _ScrollingContent(this.data,
+      {Key? key, required this.scrollPos, required this.sectionNotifier})
       : super(key: key);
   final WonderData data;
   final ValueNotifier<double> scrollPos;
@@ -20,14 +21,17 @@ class _ScrollingContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget buildText(String value) => Focus(child: Text(_fixNewlines(value), style: $styles.text.body));
+    Widget buildText(String value) =>
+        Focus(child: Text(_fixNewlines(value), style: $styles.text.body));
 
     Widget buildDropCapText(String value) {
+      // return Text('hi');
       final TextStyle dropStyle = $styles.text.dropCase;
       final TextStyle bodyStyle = $styles.text.body;
       final String dropChar = value.substring(0, 1);
       final textScale = MediaQuery.of(context).textScaleFactor;
-      final double dropCapWidth = StringUtils.measure(dropChar, dropStyle).width * textScale;
+      final double dropCapWidth =
+          StringUtils.measure(dropChar, dropStyle).width * textScale;
       final bool skipCaps = !localeLogic.isEnglish;
       return Semantics(
         label: value,
@@ -37,9 +41,12 @@ class _ScrollingContent extends StatelessWidget {
                   _fixNewlines(value).substring(1),
                   dropCap: DropCap(
                     width: dropCapWidth,
-                    height: $styles.text.body.fontSize! * $styles.text.body.height! * 2,
+                    height: $styles.text.body.fontSize! *
+                        $styles.text.body.height! *
+                        2,
                     child: Transform.translate(
-                      offset: Offset(0, bodyStyle.fontSize! * (bodyStyle.height! - 1) - 2),
+                      offset: Offset(
+                          0, bodyStyle.fontSize! * (bodyStyle.height! - 1) - 2),
                       child: Text(
                         dropChar,
                         overflow: TextOverflow.visible,
@@ -99,6 +106,7 @@ class _ScrollingContent extends StatelessWidget {
 
                     /// History 1
                     buildDropCapText(data.historyInfo1),
+                    if (data.type == WonderType.tajMahal) Text('hahahah'),
 
                     /// Quote1
                     _CollapsingPullQuoteImage(data: data, scrollPos: scrollPos),
@@ -116,7 +124,8 @@ class _ScrollingContent extends StatelessWidget {
                     Center(child: buildHiddenCollectible(slot: 2)),
                   ]),
                   Gap($styles.insets.md),
-                  _YouTubeThumbnail(id: data.videoId, caption: data.videoCaption),
+                  _YouTubeThumbnail(
+                      id: data.videoId, caption: data.videoCaption),
                   Gap($styles.insets.md),
                   ..._contentSection([
                     /// Callout2
@@ -130,13 +139,15 @@ class _ScrollingContent extends StatelessWidget {
 
                     /// Location
                     buildDropCapText(data.locationInfo1),
-                    _LargeSimpleQuote(text: data.pullQuote2, author: data.pullQuote2Author),
+                    _LargeSimpleQuote(
+                        text: data.pullQuote2, author: data.pullQuote2Author),
                     buildText(data.locationInfo2),
                   ]),
                   Gap($styles.insets.md),
                   AspectRatio(aspectRatio: 1.65, child: _MapsThumbnail(data)),
                   Gap($styles.insets.md),
-                  ..._contentSection([Center(child: buildHiddenCollectible(slot: 3))]),
+                  ..._contentSection(
+                      [Center(child: buildHiddenCollectible(slot: 3))]),
                   const Gap(150),
                 ]),
               ),
@@ -166,7 +177,8 @@ class _ScrollingContent extends StatelessWidget {
 }
 
 class _YouTubeThumbnail extends StatelessWidget {
-  const _YouTubeThumbnail({Key? key, required this.id, required this.caption}) : super(key: key);
+  const _YouTubeThumbnail({Key? key, required this.id, required this.caption})
+      : super(key: key);
   final String id;
   final String caption;
 
@@ -184,7 +196,10 @@ class _YouTubeThumbnail extends StatelessWidget {
               semanticLabel: $strings.scrollingContentSemanticYoutube,
               onPressed: handlePressed,
               child: Stack(children: [
-                AppImage(image: NetworkImage(imageUrl), fit: BoxFit.cover, scale: 1.0),
+                AppImage(
+                    image: NetworkImage(imageUrl),
+                    fit: BoxFit.cover,
+                    scale: 1.0),
                 Positioned.fill(
                   child: Center(
                     child: Container(
@@ -223,7 +238,8 @@ class _MapsThumbnail extends StatefulWidget {
 }
 
 class _MapsThumbnailState extends State<_MapsThumbnail> {
-  CameraPosition get startPos => CameraPosition(target: LatLng(widget.data.lat, widget.data.lng), zoom: 3);
+  CameraPosition get startPos =>
+      CameraPosition(target: LatLng(widget.data.lat, widget.data.lng), zoom: 3);
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +258,8 @@ class _MapsThumbnailState extends State<_MapsThumbnail> {
                 /// To prevent the map widget from absorbing the onPressed action, use a Stack + IgnorePointer + a transparent Container
                 child: Stack(
                   children: [
-                    const Positioned.fill(child: ColoredBox(color: Colors.transparent)),
+                    const Positioned.fill(
+                        child: ColoredBox(color: Colors.transparent)),
                     IgnorePointer(
                       child: GoogleMap(
                         markers: {getMapsMarker(startPos.target)},
@@ -289,7 +306,8 @@ class SliverBackgroundColor extends SingleChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext context, RenderSliverBackgroundColor renderObject) {
+  void updateRenderObject(
+      BuildContext context, RenderSliverBackgroundColor renderObject) {
     renderObject.color = color;
   }
 }
@@ -310,9 +328,10 @@ class RenderSliverBackgroundColor extends RenderProxySliver {
   @override
   void paint(PaintingContext context, Offset offset) {
     if (child != null && child!.geometry!.visible) {
-      final SliverPhysicalParentData childParentData = child!.parentData! as SliverPhysicalParentData;
-      final Rect childRect =
-          offset + childParentData.paintOffset & Size(constraints.crossAxisExtent, child!.geometry!.paintExtent);
+      final SliverPhysicalParentData childParentData =
+          child!.parentData! as SliverPhysicalParentData;
+      final Rect childRect = offset + childParentData.paintOffset &
+          Size(constraints.crossAxisExtent, child!.geometry!.paintExtent);
       context.canvas.drawRect(
           childRect,
           Paint()

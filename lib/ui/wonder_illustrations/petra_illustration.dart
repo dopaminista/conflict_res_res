@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import '/common_libs.dart';
 import '/ui/common/fade_color_transition.dart';
@@ -7,17 +6,25 @@ import '/ui/wonder_illustrations/common/paint_textures.dart';
 import '/ui/wonder_illustrations/common/wonder_illustration_builder.dart';
 import '/ui/wonder_illustrations/common/wonder_illustration_config.dart';
 
-class PetraIllustration extends StatelessWidget {
-  PetraIllustration({Key? key, required this.config}) : super(key: key);
+class PetraIllustration extends StatefulWidget {
+  const PetraIllustration({Key? key, required this.config}) : super(key: key);
   final WonderIllustrationConfig config;
+
+  @override
+  State<PetraIllustration> createState() => _PetraIllustrationState();
+}
+
+class _PetraIllustrationState extends State<PetraIllustration> {
   final String assetPath = WonderType.petra.assetPath;
+
   final fgColor = WonderType.petra.fgColor;
+
   final bgColor = WonderType.petra.bgColor;
 
   @override
   Widget build(BuildContext context) {
     return WonderIllustrationBuilder(
-      config: config,
+      config: widget.config,
       bgBuilder: _buildBg,
       mgBuilder: _buildMg,
       fgBuilder: _buildFg,
@@ -34,7 +41,7 @@ class PetraIllustration extends StatelessWidget {
           color: WonderType.petra.bgColor,
           flipX: true,
           opacity: anim.drive(Tween(begin: 0, end: 1)),
-          scale: config.shortMode ? 4 : 1.15,
+          scale: widget.config.shortMode ? 4 : 1.15,
         ),
       ),
       const IllustrationPiece(
@@ -50,21 +57,17 @@ class PetraIllustration extends StatelessWidget {
 
   List<Widget> _buildMg(BuildContext context, Animation<double> anim) => [
         FractionallySizedBox(
-          heightFactor: config.shortMode ? 1 : .8,
+          heightFactor: widget.config.shortMode ? 1 : .8,
           alignment: Alignment.bottomCenter,
           child: Opacity(
-            opacity: .2,
-            child: BackdropFilter(
-              blendMode: BlendMode.colorDodge,
-              filter: ImageFilter.blur(sigmaX: 3, sigmaY: 4),
-              child: IllustrationPiece(
-                fileName: 'petra.png',
-                heightFactor: .65,
-                minHeight: 500,
-                zoomAmt: config.shortMode ? -0.1 : -1,
-                enableHero: true,
-                fractionalOffset: Offset(0, config.shortMode ? .025 : 0),
-              ),
+            opacity: .8,
+            child: IllustrationPiece(
+              fileName: 'petra.png',
+              heightFactor: .65,
+              minHeight: 500,
+              zoomAmt: widget.config.shortMode ? -0.1 : -1,
+              enableHero: true,
+              fractionalOffset: Offset(0, widget.config.shortMode ? .025 : 0),
             ),
           ),
         ),
