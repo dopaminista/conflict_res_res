@@ -4,7 +4,7 @@
             "name": "Flutter (lib/router.dart)",
             "type": "dart",
             "request": "launch",
-            "program": "lib/router.dart"
+            "program": "lib/main.dart"
         }
     ]
 }

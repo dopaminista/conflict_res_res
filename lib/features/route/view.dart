@@ -1,0 +1,1 @@
+// serotemplate view code for route feature

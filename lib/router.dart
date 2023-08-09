@@ -11,6 +11,7 @@ import '/ui/screens/intro/intro_screen.dart';
 import '/ui/screens/timeline/timeline_screen.dart';
 import '/ui/screens/wallpaper_photo/wallpaper_photo_screen.dart';
 import '/ui/screens/wonder_details/wonders_details_screen.dart';
+import 'features/route/controller.dart';
 
 /// Shared paths / urls used across the app
 class ScreenPaths {

@@ -101,54 +101,62 @@ class _ScrollingContent extends StatelessWidget {
               child: SizedBox(
                 width: $styles.sizes.maxContentWidth1,
                 child: Column(children: [
-                  ..._contentSection([
-                    Center(child: buildHiddenCollectible(slot: 0)),
-
-                    /// History 1
-                    buildDropCapText(data.historyInfo1),
-                    if (data.type == WonderType.tajMahal) Text('hahahah'),
-
-                    /// Quote1
-                    _CollapsingPullQuoteImage(data: data, scrollPos: scrollPos),
-                    Center(child: buildHiddenCollectible(slot: 1)),
-
-                    /// Callout1
-                    _Callout(text: data.callout1),
-
-                    /// History 2
-                    buildText(data.historyInfo2),
-                    _SectionDivider(scrollPos, sectionNotifier, index: 1),
-
-                    /// Construction 1
-                    buildDropCapText(data.constructionInfo1),
-                    Center(child: buildHiddenCollectible(slot: 2)),
-                  ]),
-                  Gap($styles.insets.md),
-                  _YouTubeThumbnail(
-                      id: data.videoId, caption: data.videoCaption),
-                  Gap($styles.insets.md),
-                  ..._contentSection([
-                    /// Callout2
-                    Gap($styles.insets.xs),
-                    _Callout(text: data.callout2),
-
-                    /// Construction 2
-                    buildText(data.constructionInfo2),
-                    _SlidingImageStack(scrollPos: scrollPos, type: data.type),
-                    _SectionDivider(scrollPos, sectionNotifier, index: 2),
-
-                    /// Location
-                    buildDropCapText(data.locationInfo1),
-                    _LargeSimpleQuote(
-                        text: data.pullQuote2, author: data.pullQuote2Author),
-                    buildText(data.locationInfo2),
-                  ]),
-                  Gap($styles.insets.md),
-                  AspectRatio(aspectRatio: 1.65, child: _MapsThumbnail(data)),
-                  Gap($styles.insets.md),
                   ..._contentSection(
-                      [Center(child: buildHiddenCollectible(slot: 3))]),
-                  const Gap(150),
+                    [
+                      // Center(child: buildHiddenCollectible(slot: 0)),
+                      buildPageContent(data.type),
+                      Gap($styles.insets.md),
+
+                      buildPageContent(data.type),
+                      Gap($styles.insets.xs),
+                      buildPageContent(data.type),
+
+                      //   /// History 1
+                      //   buildDropCapText(data.historyInfo1),
+                      //   if (data.type == WonderType.tajMahal) Text('hahahah'),
+
+                      //   /// Quote1
+                      //   _CollapsingPullQuoteImage(data: data, scrollPos: scrollPos),
+                      //   Center(child: buildHiddenCollectible(slot: 1)),
+
+                      //   /// Callout1
+                      //   _Callout(text: data.callout1),
+
+                      //   /// History 2
+                      //   buildText(data.historyInfo2),
+                      //   _SectionDivider(scrollPos, sectionNotifier, index: 1),
+
+                      //   /// Construction 1
+                      //   buildDropCapText(data.constructionInfo1),
+                      //   Center(child: buildHiddenCollectible(slot: 2)),
+                      // ]),
+                      // Gap($styles.insets.md),
+                      // _YouTubeThumbnail(
+                      //     id: data.videoId, caption: data.videoCaption),
+                      // Gap($styles.insets.md),
+                      // ..._contentSection([
+                      //   /// Callout2
+                      //   Gap($styles.insets.xs),
+                      //   _Callout(text: data.callout2),
+
+                      //   /// Construction 2
+                      //   buildText(data.constructionInfo2),
+                      //   _SlidingImageStack(scrollPos: scrollPos, type: data.type),
+                      //   _SectionDivider(scrollPos, sectionNotifier, index: 2),
+
+                      //   /// Location
+                      //   buildDropCapText(data.locationInfo1),
+                      //   _LargeSimpleQuote(
+                      //       text: data.pullQuote2, author: data.pullQuote2Author),
+                      //   buildText(data.locationInfo2),
+                    ],
+                  ),
+                  // Gap($styles.insets.md),
+                  // AspectRatio(aspectRatio: 1.65, child: _MapsThumbnail(data)),
+                  // Gap($styles.insets.md),
+                  // ..._contentSection(
+                  //     [Center(child: buildHiddenCollectible(slot: 3))]),
+                  // const Gap(150),
                 ]),
               ),
             ),
@@ -339,5 +347,74 @@ class RenderSliverBackgroundColor extends RenderProxySliver {
             ..color = color);
       context.paintChild(child!, offset + childParentData.paintOffset);
     }
+  }
+}
+
+class PetraView extends StatefulHookConsumerWidget {
+  const PetraView({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _PetraViewState();
+}
+
+class _PetraViewState extends ConsumerState<PetraView> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      ElevatedButton(
+        onPressed: () {},
+        child: Row(
+          children: [
+            Icon(Icons.upload_file),
+            Text(
+              'upload Image',
+            ),
+          ],
+        ),
+      ),
+      // Container(
+      //   child: Text('taj mahalae hosgeldin ama degil'),
+      // ),
+    ]);
+  }
+}
+
+class TajMahalView extends StatefulHookConsumerWidget {
+  const TajMahalView({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _TajMahalState();
+}
+
+class _TajMahalState extends ConsumerState<TajMahalView> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      ElevatedButton(
+        onPressed: () {},
+        child: Row(
+          children: [
+            Icon(Icons.upload_file),
+            Text(
+              'upload Image',
+            ),
+          ],
+        ),
+      ),
+      // Container(
+      //   child: Text('taj mahalae hosgeldin ama degil'),
+      // ),
+    ]);
+  }
+}
+
+Widget buildPageContent(WonderType type) {
+  switch (type) {
+    case WonderType.petra:
+      return PetraView();
+    case WonderType.tajMahal:
+      return TajMahalView();
+    default:
+      return Container();
   }
 }

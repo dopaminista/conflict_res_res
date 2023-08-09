@@ -1,4 +1,4 @@
-export '../../features/image_manager/model.dart' show ImageManagerEntitySchema;
+export '../../features/route/model.dart' show RouteEntitySchema;
 
 
 

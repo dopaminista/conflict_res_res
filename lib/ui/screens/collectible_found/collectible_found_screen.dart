@@ -51,8 +51,8 @@ class CollectibleFoundScreen extends StatelessWidget {
         )
             .animate()
             .scale(
-                begin: 1.5,
-                end: 3,
+                begin: Offset(1.5, 1.5),
+                end: Offset(3, 3),
                 curve: Curves.easeInExpo,
                 delay: t,
                 duration: t * 3)
@@ -163,10 +163,11 @@ class CollectibleFoundScreen extends StatelessWidget {
           ),
         )
         .scale(
-            begin: 0.3,
-            duration: t * 2,
-            curve: Curves.easeOutExpo,
-            alignment: const Alignment(0, 0.7));
+          begin: Offset(0.3, .3),
+          duration: t * 2,
+          curve: Curves.easeOutExpo,
+          alignment: const Alignment(0, 0.7),
+        );
   }
 
   Widget _buildRibbon(BuildContext context) {
@@ -175,7 +176,7 @@ class CollectibleFoundScreen extends StatelessWidget {
             $strings.collectibleFoundTitleArtifactDiscovered.toUpperCase())
         .animate()
         .scale(
-            begin: 0.3,
+            begin: Offset(0.3, .3),
             duration: t * 2,
             curve: Curves.easeOutExpo,
             alignment: const Alignment(0, -1));
